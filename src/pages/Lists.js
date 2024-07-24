@@ -1,8 +1,8 @@
 import styled from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar/NavBar';
 import { useContext } from 'react';
 import ListsContext from '../context/ListsContext';
-import { Link, useNavigate } from 'react-router-dom';
 
 const ListWrapper = styled.div`
   display: flex;
