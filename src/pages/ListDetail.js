@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar/NavBar';
@@ -15,14 +15,13 @@ const ListItemWrapper = styled.div`
 function ListDetail() {
   let navigate = useNavigate();
   const { listId } = useParams();
-  const {loading, error, data} = useContext(ItemsContext);
-  const [items, setItems] = useState([]);
+  // Use params from URL to determine what data shold be fetched and added
+  // to the Context instead of fetching all data you specifically fetch items
+  const {loading, error, items, fetchItems} = useContext(ItemsContext);
 
   useEffect(() => {
-    data &&
-      listId &&
-      setItems(data.filter((item) => item.listId === parseInt(listId)));
-  }, [data, listId]);
+    listId && !items.length && fetchItems(listId);
+  }, [fetchItems, items, listId]);
 
   return (
     <>
