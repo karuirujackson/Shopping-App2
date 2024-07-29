@@ -1,12 +1,8 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Header from './components/Header/Header';
-import Lists from './pages/Lists';
-import ListDetail from './pages/ListDetail';
-import ListForm from './pages/ListForm';
-import { ListsContextProvider } from './context/ListsContext';
-import { ItemsContextProvider } from './context/ItemsContext';
+import AppContext from './context/AppContext';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -24,6 +20,10 @@ const AppWrapper = styled.div`
   text-align: center;
 `;
 
+const Lists = lazy(() => import(/* webpackChunkName: "Lists" */'./pages/Lists'));
+const ListDetail = lazy(() => import(/* webpackChunkName:  "ListDetail" */'./pages/ListDetail'));
+const ListForm = lazy(() => import(/*  webpackChunkName: "ListForm" */'./pages/ListForm'));
+
 function App() {
   return (
     <>
@@ -31,15 +31,16 @@ function App() {
       <AppWrapper>
         <BrowserRouter>
           <Header />
-          <ListsContextProvider>
-            <ItemsContextProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AppContext>
               <Routes>
                 <Route path='/' element={<Lists />} />
                 <Route path='/list/:listId/new' element={<ListForm />} />
                 <Route path='/list/:listId' element={<ListDetail />} />
               </Routes>
-            </ItemsContextProvider>
-          </ListsContextProvider>
+            </AppContext>
+          </Suspense>
+          
         </BrowserRouter>
       </AppWrapper>
     </>
