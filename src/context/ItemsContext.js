@@ -27,10 +27,17 @@ const reducer = (state, action) => {
         loading: false,
         error: action.payload
       };
+      // Adds a new action to the reducer hook which is dispatched once we try adding a new item.
+    case 'ADD_ITEM_SUCCESS':
+      return {
+        ...state,
+        items: [...state.items, action.payload],
+        loading: false
+      };
     default:
       return state;
   }
-}
+};
 export const ItemsContextProvider = ({ children }) => {
   // useReducer takes an initiliazed state and a reducer function that determines which data should be returned
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -60,8 +67,39 @@ export const ItemsContextProvider = ({ children }) => {
     }
   }, []);
 
+  // Add a new function that can handle POST requests, as this function should also set the method and a body when handling the fetch request.
+  const addItem = useCallback(async ({ listId, title, quantity, price }) => {
+    const itemId = Math.floor(Math.random() * 100);
+    try {
+      const data = await fetch(`https://my-json-server.typicode.com/PacktPublishing/React-Projects-Second-Edition/items`,
+        {
+          method: 'POST',
+          body: JSON.stringify(
+            {
+              id: itemId, listId, title, quantity, price
+            }
+          ),
+        },
+      );
+      const result = await data.json();
+
+      if (result) {
+        dispatch(
+          {
+            type: 'ADD_ITEM_SUCCESS',
+            payload: {
+              id: itemId, listId, title, quantity, price
+            },
+          }
+        );
+      }
+    } catch {
+      
+    }
+  }, []);
+
   return (
-    <ItemsContext.Provider value={{...state, fetchItems}}>
+    <ItemsContext.Provider value={{ ...state, fetchItems, addItem }}>
         {children}
     </ItemsContext.Provider>
   )
