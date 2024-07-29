@@ -20,6 +20,10 @@ const AppWrapper = styled.div`
   text-align: center;
 `;
 
+
+//Lazy and Suspense for code splitting to improve performance
+//Breakes the code into smaller chunks thus preventing the browser from downloading the entire bundle of code
+//at once rather loads the bundle in chunks depending on components to be rendered on the browser
 const Lists = lazy(() => import(/* webpackChunkName: "Lists" */'./pages/Lists'));
 const ListDetail = lazy(() => import(/* webpackChunkName:  "ListDetail" */'./pages/ListDetail'));
 const ListForm = lazy(() => import(/*  webpackChunkName: "ListForm" */'./pages/ListForm'));
